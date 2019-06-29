@@ -25,7 +25,7 @@ app = Flask(__name__)
 @app.route('/')
 def hello():
     """Return a friendly HTTP greeting."""
-    algo.run()
+    algo.run_algo()
     return 'Hello World!'
 
 
