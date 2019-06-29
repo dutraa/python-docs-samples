@@ -1,2 +1,4 @@
 Flask==1.0.2
-alpaca_trade_api
+alpaca-trade-api>=0.25
+ta
+sklearn
