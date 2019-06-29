@@ -366,31 +366,31 @@ def run_ws(conn, channels):
         conn.close
         run_ws(conn, channels)
 
+def run_algo():
 
+    # Get when the market opens or opened today
+    nyc = timezone('America/New_York')
+    today = datetime.today().astimezone(nyc)
+    today_str = datetime.today().astimezone(nyc).strftime('%Y-%m-%d')
+    calendar = api.get_calendar(start=today_str, end=today_str)[0]
+    market_open = today.replace(
+        hour=calendar.open.hour,
+        minute=calendar.open.minute,
+        second=0
+    )
+    market_open = market_open.astimezone(nyc)
+    market_close = today.replace(
+        hour=calendar.close.hour,
+        minute=calendar.close.minute,
+        second=0
+    )
+    market_close = market_close.astimezone(nyc)
 
-# Get when the market opens or opened today
-nyc = timezone('America/New_York')
-today = datetime.today().astimezone(nyc)
-today_str = datetime.today().astimezone(nyc).strftime('%Y-%m-%d')
-calendar = api.get_calendar(start=today_str, end=today_str)[0]
-market_open = today.replace(
-    hour=calendar.open.hour,
-    minute=calendar.open.minute,
-    second=0
-)
-market_open = market_open.astimezone(nyc)
-market_close = today.replace(
-    hour=calendar.close.hour,
-    minute=calendar.close.minute,
-    second=0
-)
-market_close = market_close.astimezone(nyc)
-
-# Wait until just before we might want to trade
-current_dt = datetime.today().astimezone(nyc)
-since_market_open = current_dt - market_open
-while since_market_open.seconds // 60 <= 14:
-    time.sleep(1)
+    # Wait until just before we might want to trade
+    current_dt = datetime.today().astimezone(nyc)
     since_market_open = current_dt - market_open
+    while since_market_open.seconds // 60 <= 14:
+        time.sleep(1)
+        since_market_open = current_dt - market_open
 
-run(get_tickers(), market_open, market_close)
+    run(get_tickers(), market_open, market_close)
